@@ -735,7 +735,7 @@ Remember: The primary goal is to provide precise, clean timestamps with accurate
 
         # Update assistant description display
         assistant_descriptions = {
-            "Honouring_Karpal_Singh": "link here",
+            "Honouring_Karpal_Singh": "https://f001.backblazeb2.com/file/Kiosk-ZoneTV-Proxy/0E4C36A5-1993-461D-BDCF-3EF4A7613EFA.MP4",
         }
         st.markdown(f"<div class='assistant-info'>{assistant_descriptions.get(selected_assistant_name, '')}</div>", 
                     unsafe_allow_html=True)
@@ -830,7 +830,7 @@ Remember: The primary goal is to provide precise, clean timestamps with accurate
                     
                     # Get file_id based on selected assistant
                     file_ids = {
-                        "Honouring_Karpal_Singh": "855112"
+                        "Honouring_Karpal_Singh": "920357"
                     }
                     file_id = file_ids.get(selected_assistant_name)
                     
