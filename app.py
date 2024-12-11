@@ -608,7 +608,7 @@ Remember: The primary goal is to provide precise, clean timestamps with accurate
 
     def run(self):
         # Set page config and title
-        st.set_page_config(page_title="Gobind Singh Deo Enhanced Chat Assistant by BlacX", layout="centered")
+        st.set_page_config(page_title="Digital Minister Gobind Singh Deo Enhanced Chat Assistant by BlacX", layout="centered")
         
         # Custom CSS for Google-like styling
         st.markdown("""
@@ -665,7 +665,7 @@ Remember: The primary goal is to provide precise, clean timestamps with accurate
                 margin-top: 5px;
             }
             </style>
-            <div class="big-font">Gobind Singh Digital Minister Enhanced Chat Assistant by BlacX</div>
+            <div class="big-font">Digital Minister Gobind Singh Deo Enhanced Chat Assistant by BlacX</div>
         """, unsafe_allow_html=True)
         
         # Language selector and "New Conversation" button side by side
