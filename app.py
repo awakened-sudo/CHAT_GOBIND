@@ -20,14 +20,12 @@ class AssistantUI:
         self.client = OpenAI(api_key=api_key)
         
         # Hardcoded assistant and vector store IDs
-        self.ASSISTANT_ID = "asst_Qmoz7GL0UQRGnTpSvHUh1jrE"
-        self.VECTOR_STORE_ID = "vs_SbBbS2hVY0NMwpAp3IYHASpb"
+        self.ASSISTANT_ID = "asst_k77pCUJSViHjAKtSMQBgnDg8"
+        self.VECTOR_STORE_ID = "vs_9p6gYSeSHs3xtwK4A9yKUKNP"
         
         # Dictionary to store assistant names and IDs
         self.assistants = {
-            "GOBIND_SINGH_DEO": "asst_Qmoz7GL0UQRGnTpSvHUh1jrE",
-            "DIGITAL_INITIATIVES": "asst_tzadLKlr6MmeXffh2n1yWZuX", 
-            "MDEC_POLICIES": "asst_xxf55F2JbdteRsGw5m46FzUC", 
+            "Honouring_Karpal_Singh": "asst_k77pCUJSViHjAKtSMQBgnDg8",
         }
 
         # Add translations dictionary
@@ -513,30 +511,14 @@ Remember: The primary goal is to provide precise, clean timestamps with accurate
 
         # Define specific configurations for each assistant
         assistant_configs = {
-            "GOBIND_SINGH_DEO": {
-                "name": "Gobind Singh Deo Digital Minister Analyst",
-                "vector_store": "vs_SbBbS2hVY0NMwpAp3IYHASpb",
+            "Honouring_Karpal_Singh": {
+                "name": "Honouring Karpal Singh Analyst",
+                "vector_store": "vs_9p6gYSeSHs3xtwK4A9yKUKNP",
                 "additional_instructions": """Focus on analyzing Minister Gobind Singh Deo's:
                     - Digital transformation initiatives
                     - Technology policies and reforms
                     - Digital economy development
                     - MDEC and digital agency oversight"""
-            },
-            "DIGITAL_INITIATIVES": {
-                "name": "Digital Initiatives Analyst",
-                "vector_store": "vs_xRhPCdDkF8k3MF37rGreAI1I",
-                "additional_instructions": """Analyze Malaysia's digital initiatives focusing on:
-                    - Digital infrastructure development
-                    - Technology adoption programs
-                    - Digital inclusion efforts"""
-            },
-            "MDEC_POLICIES": {
-                "name": "MDEC Policy Analyst",
-                "vector_store": "vs_koy1fEQgl5ZIBRdrVx2mrR20",
-                "additional_instructions": """Analyze MDEC policies focusing on:
-                    - Digital economy frameworks
-                    - Tech startup ecosystem
-                    - Digital skills development"""
             }
         }
 
@@ -626,7 +608,7 @@ Remember: The primary goal is to provide precise, clean timestamps with accurate
 
     def run(self):
         # Set page config and title
-        st.set_page_config(page_title="Anwar Ibrahim Enhanced Chat Assistant by BlacX", layout="centered")
+        st.set_page_config(page_title="Gobind Singh Deo Enhanced Chat Assistant by BlacX", layout="centered")
         
         # Custom CSS for Google-like styling
         st.markdown("""
@@ -709,9 +691,7 @@ Remember: The primary goal is to provide precise, clean timestamps with accurate
 
         # Define assistant IDs and their corresponding vector stores
         assistant_vector_stores = {
-            "GOBIND_SINGH_DEO": "vs_SbBbS2hVY0NMwpAp3IYHASpb",
-            "DIGITAL_INITIATIVES": "vs_xRhPCdDkF8k3MF37rGreAI1I", 
-            "MDEC_POLICIES": "vs_koy1fEQgl5ZIBRdrVx2mrR20"
+            "Honouring_Karpal_Singh": "vs_9p6gYSeSHs3xtwK4A9yKUKNP"
         }
 
         # Initialize session state for tracking assistant changes
@@ -755,9 +735,7 @@ Remember: The primary goal is to provide precise, clean timestamps with accurate
 
         # Update assistant description display
         assistant_descriptions = {
-            "GOBIND_SINGH_DEO": "link here",
-            "DIGITAL_INITIATIVES": "link here",
-            "MDEC_POLICIES": "link here"
+            "Honouring_Karpal_Singh": "link here",
         }
         st.markdown(f"<div class='assistant-info'>{assistant_descriptions.get(selected_assistant_name, '')}</div>", 
                     unsafe_allow_html=True)
@@ -852,9 +830,7 @@ Remember: The primary goal is to provide precise, clean timestamps with accurate
                     
                     # Get file_id based on selected assistant
                     file_ids = {
-                        "GOBIND_SINGH_DEO": "855112",
-                        "DIGITAL_INITIATIVES": "846082",
-                        "MDEC_POLICIES": "846083"
+                        "Honouring_Karpal_Singh": "855112"
                     }
                     file_id = file_ids.get(selected_assistant_name)
                     
