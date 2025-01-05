@@ -99,7 +99,7 @@ class AssistantUI:
                     "நந்வர் இப்ராஹிம் பிரதான மாநில மேல்வாய்ப்பு என்ன?",
                     "அந்வர் குறித்து மாதிரி மலையில் எவ்வாறு வளர்ந்திருக்கிறது?",
                     "அவரின் முக்கிய நிதி நோக்கங்கள் என்ன?",
-                    "அவர் விரிவாக்க வழியாக இருப்பது ���ன்ன?"
+                    "அவர் விரிவாக்க வழியாக இருப்பது ன்ன?"
                 ],
                 "processing": "உங்கள் கேள்வியை செயலாக்குகிறது...",
                 "select_assistant": "உதவியாளரை தேர்ந்தெடுக்கவும்",
@@ -143,7 +143,7 @@ class AssistantUI:
             "عربي": [
                 "تحليل الرحلة العاطفية للشخصيات في هذا المشهد",
                 "تحديد تقنيات السرد البصري في هذا المقطع",
-                "دراسة انتقالات المشهد وتأثي��ها على السرد",
+                "دراسة انتقالات المشهد وتأثيرها على السرد",
                 "استكشاف استخدام الإضاءة واللون لنقل المزاج",
                 "تحليل حركات الكاميرا وأهميتها السردية",
                 "تحليل وتيرة وإيقاع الحوار والعمل",
@@ -199,6 +199,19 @@ Deliver precise, source-free timestamp analysis of video content that ensures al
 - NO brackets except in "At [timestamp]" format
 - NO annotations or metadata with timestamps
 - NO non-standard time formats
+
+### Pre-Submission Checklist
+1. Timestamp Format Verification
+   - Confirm HH:MM:SS format
+   - Verify 24-hour time
+   - Check leading zeros
+   - Validate colon placement
+
+2. Source Removal Verification
+   - Remove all source references
+   - Clear any metadata
+   - Delete annotations 
+   - Strip brackets (except in standard format)
 
 ### Formatting Specifications
 1. Time Components:
@@ -549,14 +562,16 @@ Remember: The primary goal is to provide precise, clean timestamps with accurate
             thread = self.client.beta.threads.create()
             st.session_state.thread_id = thread.id
             
-            # Add initial message as assistant instead of system
+            # Add initial message enforcing timestamp formatting
             self.client.beta.threads.messages.create(
                 thread_id=thread.id,
                 role="assistant",
                 content="""IMPORTANT: I will follow these rules strictly:
-                1. Always provide timestamps for every scene description
-                2. Use clarification protocol for vague queries
-                3. Verify all responses include proper timestamps"""
+                1. I will NEVER include source references like [source], †source, or any annotations
+                2. I will ONLY use clean timestamps in HH:MM:SS format 
+                3. The ONLY acceptable brackets are for timestamps as: At [HH:MM:SS]
+                4. I will VERIFY every response to ensure NO source annotations exist
+                5. If I detect any source annotations, I will remove them before responding"""
             )
             
         return st.session_state.thread_id
@@ -594,7 +609,20 @@ Remember: The primary goal is to provide precise, clean timestamps with accurate
         """Process message content to add timestamp links"""
         import re
         
-        # Enhanced pattern to match more timestamp formats
+        # First remove any source annotations
+        source_patterns = [
+            r'\【\d+:\d+†source\】',  # Matches 【5:1†source】
+            r'\[\d+:\d+†source\]',    # Matches [5:1†source]
+            r'\【\d+:\d+\】',         # Matches 【5:1】
+            r'†source',               # Matches standalone †source
+            r'\[\d+:\d+\](?!.*\])',   # Matches [5:1] when not part of timestamp
+        ]
+        
+        # Remove source annotations
+        for pattern in source_patterns:
+            content = re.sub(pattern, '', content)
+        
+        # Enhanced pattern to match clean timestamps
         timestamp_pattern = r'\b\d{1,2}:\d{2}(:\d{2})?(\.\d{1,3})?\b'
         
         # Replace timestamps with clickable links
@@ -605,6 +633,23 @@ Remember: The primary goal is to provide precise, clean timestamps with accurate
         )
         
         return processed_content
+
+    def clean_source_annotations(self, text):
+        """Remove any source annotations from text"""
+        import re
+        
+        patterns = [
+            r'\【\d+:\d+†source\】',
+            r'\[\d+:\d+†source\]',
+            r'\【\d+:\d+\】',
+            r'†source',
+            r'\[\d+:\d+\](?!.*\])'
+        ]
+        
+        for pattern in patterns:
+            text = re.sub(pattern, '', text)
+        
+        return text
 
     def run(self):
         # Set page config and title
@@ -808,7 +853,14 @@ Remember: The primary goal is to provide precise, clean timestamps with accurate
                     run = self.client.beta.threads.runs.create(
                         thread_id=thread_id,
                         assistant_id=self.ASSISTANT_ID,
-                        additional_instructions=f"Use vector store {assistant_vector_stores[selected_assistant_name]} for {selected_assistant_name}"
+                        additional_instructions=f"""
+                        Use vector store {assistant_vector_stores[selected_assistant_name]} for {selected_assistant_name}.
+                        CRITICAL FORMATTING RULES:
+                        1. NEVER include source references (†source, [source], etc.)
+                        2. ONLY use timestamps in HH:MM:SS format
+                        3. ONLY use brackets for timestamps like: At [HH:MM:SS]
+                        4. Remove ALL source annotations before responding
+                        5. Verify response is free of source references"""
                     )
                     
                     # Wait for completion
@@ -836,15 +888,23 @@ Remember: The primary goal is to provide precise, clean timestamps with accurate
                     
                     # Display conversation history
                     st.markdown("### Conversation:")
+
+                    
+                    # Then in the message display loop:
                     for msg in messages.data:
                         role = "🧑" if msg.role == "user" else "🤖"
                         for content in msg.content:
                             if content.type == 'text':
-                                # Process content to add timestamp links
+                                # Clean source annotations first
+                                cleaned_content = self.clean_source_annotations(content.text.value)
+                                
+                                # Then process timestamps
                                 processed_content = self.process_message_content(
-                                    content.text.value,
+                                    cleaned_content,
                                     file_id
                                 )
+
+
                                 
                                 st.markdown(f"""
                                 <div style='background-color:{"#f0f2f6" if msg.role == "user" else "#f8f9fa"}; 
